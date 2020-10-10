@@ -6,13 +6,13 @@ if __name__ == "__main__":
 	siguientes = dict()
 	for line in gramatica:
 		tokens = line.split()
-		#print(tokens)
 		if(not tokens[0] in primeros):
 			primeros[tokens[0]]= list()
 			siguientes[tokens[0]]= list()
-			primeros[tokens[0]].append(tokens[3])
-		# else:
-		# 	primeros[tokens[0]].append(tokens[3])
+			primeros[tokens[0]].append(tokens[2])
+		else:
+			if not tokens[2] in primeros[tokens[0]]:
+				primeros[tokens[0]].append(tokens[2])
 	Terminal=False
 	while not Terminal:
 		Terminal = True

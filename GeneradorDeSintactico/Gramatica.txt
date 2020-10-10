@@ -1,14 +1,14 @@
 prog : fn_decl_list main_prog
-fn_decl_list :  f fn_decl_list
+fn_decl_list : f fn_decl_list
 fn_decl_list : lambda
-f : function fid tk_dospuntos (bool||num) tk_par_izq var_dec tk_par_der stmt_var_list stmt_block  
-main_prog :  stmt_var_list stmt_p end 
+f : function fid tk_dospuntos (bool||num) tk_par_izq var_dec tk_par_der stmt_var_list stmt_block 
+main_prog : stmt_var_list stmt_p end 
 stmt_var_list : var var_dec tk_puntoycoma 
 stmt_var_list : lambda
 var_dec : id tk_dospuntos (bool||num) add_var
 add_var : tk_coma id tk_dospuntos (bool||num) add_var
 add_var : lambda	
-stmt_block  : tk_llave_izq stmt stmt_p tk_llave_der
+stmt_block : tk_llave_izq stmt stmt_p tk_llave_der
 stmt_block : stmt
 stmt_p : stmt stmt_p
 stmt_p : lambda
@@ -16,35 +16,36 @@ stmt : print lexpr tk_puntoycoma
 stmt : input id tk_puntoycoma
 stmt : when par_lexpr do_block
 stmt : if par_lexpr do_block else stmt_block
-stmt : (unless|| while || until) par_lexpr do_block 
-stmt : do_block ( while|| until) par_lexpr 
+stmt : (unless||while||until) par_lexpr do_block 
+stmt : do_block (while||until) par_lexpr 
 do_block : do stmt_block
-par_lexpr : tk_par_izq  lexpr tk_par_der
+par_lexpr : tk_par_izq lexpr tk_par_der
 stmt : return lexpr tk_puntoycoma
 stmt : loop stmt_block
 stmt : repeat num tk_dospuntos stmt_block
-stmt : for tk_par_izq  lexpr tk_puntoycoma lexpr tk_puntoycoma lexpr tk_par_der do_block
+stmt : for tk_par_izq lexpr tk_puntoycoma lexpr tk_puntoycoma lexpr tk_par_der do_block
 stmt : next tk_puntoycoma
 stmt : break tk_puntoycoma
 stmt : id (tk_asignacion||tk_sum_asig||tk_res_asig||tk_mul_asig||tk_div_asig||tk_mod_asig) lexpr tk_puntoycoma
-stmt : id (tk_incremento || tk_decremento) tk_puntoycoma
-stmt : (tk_decremento || tk_incremento) id tk_puntoycoma
+stmt : id (tk_incremento||tk_decremento) tk_puntoycoma
+stmt : (tk_decremento||tk_incremento) id tk_puntoycoma
 lexpr : expr nexpr
-expr : (not tk_par_izq  rexpr tk_par_der|| rexpr)
+expr : not tk_par_izq rexpr tk_par_der
+expr : rexpr
 nexpr : (and||or) lexpr
 nexpr : lambda
 rexpr : simple_expr comp_expr
-comp_expr: (tk_mayor_igual || tk_menor_igual || tk_mayor || tk_menor || tk_igualdad || tk_diferente) simple_expr  
-comp_expr: lambda
+comp_expr : (tk_mayor_igual||tk_menor_igual||tk_mayor||tk_menor||tk_igualdad||tk_diferente)simple_expr 
+comp_expr : lambda
 simple_expr : term sum_expr
-sum_expr : (tk_mas || tk_menos) simple_expr
+sum_expr : (tk_mas||tk_menos) simple_expr
 sum_expr : lambda 
 term : factor mul_expr
-mul_expr : (tk_mul || tk_div || tk_mod) term
+mul_expr : (tk_mul||tk_div||tk_mod) term
 mul_expr : lambda
-factor : (tk_num || tk_bool)
-factor : id (tk_incremento || tk_decremento)
-factor : (tk_incremento || tk_decremento) id
+factor : (tk_num||tk_bool)
+factor : id (tk_incremento||tk_decremento)
+factor : (tk_incremento||tk_decremento) id
 factor : id
 factor : par_lexpr
 factor : fid par_izq lexpr coma_lexper par_der
