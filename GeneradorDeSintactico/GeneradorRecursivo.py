@@ -21,7 +21,27 @@ def primerosF(alpha):
 				primerosAlpha.append("lambda")
 			else:
 				primerosAn=primerosF(regla[i+1])
-	return primerosAlpha
+	return list(dict.fromkeys(primerosAlpha))
+
+def siguientesF(alpha):
+	if alpha=="prog":
+		return list(["$"])
+	siguientesAlpha=list()
+	for noTerminal in reglas:	
+		for regla in reglas[noTerminal]:
+			if alpha==noTerminal:continue
+			if alpha in regla:
+				i=1
+				primerosBeta=list(["lambda"])
+				while "lambda" in primerosBeta and regla.index(alpha)+i<len(regla):
+					primerosBeta.remove("lambda")
+					siguientesAlpha+=primerosBeta
+					primerosBeta=primerosF(regla[regla.index(alpha)+i])
+					i+=1
+				if regla.index(alpha)+i == len(regla) and "lambda" in primerosBeta:
+					siguientesAlpha+=siguientesF(noTerminal)
+	return list(dict.fromkeys(siguientesAlpha))
+						
 			
 		
 
@@ -40,6 +60,7 @@ if __name__ == "__main__":
 		else:
 			reglas[tokens[0]].append(tokens[2:])
 	for noTerminal in reglas:
-		primeros[noTerminal]=list(dict.fromkeys(primerosF(noTerminal))) 
-		print(noTerminal)
-		print(primeros[noTerminal])
+		primeros[noTerminal]=primerosF(noTerminal)
+		#print(noTerminal)
+		#print(primeros[noTerminal])
+	print(siguientesF("stmt"))
