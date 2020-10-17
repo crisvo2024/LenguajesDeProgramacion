@@ -6,5 +6,5 @@ from AnalizadorSintactico import AnalizadorSintactico
 
 if __name__ == "__main__":
 	AnaSinc=AnalizadorSintactico()
-	AnaSinc.ListarTokens()
+	AnaSinc.analizar()
 

@@ -191,6 +191,8 @@ class AnalizadorLexico:
 
 
     def nextToken(self):
+        if self.finalizado==True:
+            raise RuntimeError("EndOfFile")
         res=""
         try:
             if self.nextChar in self.lexemasSimples or self.nextChar in self.simbolosUnicos or self.nextChar in self.lexemasSimplesInvalidos:
