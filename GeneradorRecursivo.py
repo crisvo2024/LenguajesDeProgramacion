@@ -5,6 +5,38 @@ reglas = dict()
 siguientes = dict()
 pilaSiguientes=list()
 prediccion=dict()
+dictTokens={
+	"tk_llave_izq":'{',
+	"tk_llave_der":'}',
+	"tk_par_izq":'(',
+	"tk_par_der":')',
+	"tk_puntoycoma":';',
+	"tk_coma":',',
+	"tk_mayor":'>',
+	"tk_menor":'<',
+	"tk_mas":'+',
+	"tk_menos": '-',
+	"tk_mul": '*',
+	"tk_div": '/',
+	"tk_mod": '%',
+	"tk_dospuntos": ':',
+	"tk_asignacion":':=',
+	"tk_mayor_igual":'>=',
+	"tk_menor_igual": '<=',
+	"tk_sum_asig": '+=',
+	"tk_res_asig": '-=',
+	"tk_mul_asig": '*=',
+	"tk_div_asig": '/=',
+	"tk_mod_asig": '%=',
+	"tk_igualdad": '==',
+	"tk_diferente": '!=',
+	"tk_incremento": '++',
+	"tk_decremento": '--',
+	"tk_fid": "identificador de funcion'",
+	"tk_id": "identificador",
+	"tk_num":"numero",
+	
+}
 
 def primerosF(alpha):
 	if not alpha in reglas:
@@ -111,7 +143,7 @@ if __name__ == "__main__":
 	analizador = open(dirname+"/AnalizadorSintactico.py","wt")
 	analizador.write("from AnalizadorLexico import AnalizadorLexico\n")
 	analizador.write("class AnalizadorSintactico:\n")
-	#analizador.write(f"	prediccion={prediccion}\n")
+	analizador.write(f"	tokens={dictTokens}\n")
 	analizador.write("	def __init__(self):\n")
 	analizador.write("		self.Analex = AnalizadorLexico()\n")
 
@@ -119,13 +151,22 @@ if __name__ == "__main__":
 		analizador.write(f"	def {noTerminal}(self): \n")
 		i=0
 		for regla in reglas[noTerminal]:
-			analizador.write(f"		if self.tokenList[-3] in {prediccion[noTerminal][i]}: \n")
+			analizador.write(f"		if self.tokenList[0] in {prediccion[noTerminal][i]}: \n")
 			for token in regla:
 				if token in primeros:
 					analizador.write(f"			self.{token}()  \n")
-				else:
+				elif token != 'lambda':
 					analizador.write(f"			self.emparejar('{token}')  \n")
+				else:
+					analizador.write(f"			pass  \n")
 			i+=1
+			analizador.write(f"			return\n")
+		analizador.write(f"		else: \n")
+		printPrediction=list()
+		for  lista in prediccion[noTerminal]:
+			printPrediction.extend(lista)
+		analizador.write(f"			self.prediccion = {printPrediction}\n")
+		analizador.write("			raise Exception('')\n")
 	
 	analizador.write("	def analizar(self):\n")
 	analizador.write("		token=self.Analex.nextToken()\n")
@@ -133,15 +174,24 @@ if __name__ == "__main__":
 	analizador.write("		try:\n")
 	analizador.write("			self.prog()\n")
 	analizador.write("		except RuntimeError:\n")
-	analizador.write('			print("Error sintactico: se encontro final de archivo; se esperaba ‘end’")\n')
+	analizador.write('			print("Error sintactico: se encontro final de archivo; se esperaba ‘end’.")\n')
+	analizador.write('			return\n')
 	analizador.write('		except:\n')	
-	analizador.write("			print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'>Error sintactico:' + 'se encontro: '+self.tokenList[-3]+'; se esperaba: '+self.prediccion)\n")
-
+	analizador.write("			for simbolo in self.prediccion:\n")
+	analizador.write("				if simbolo in self.tokens:\n")
+	analizador.write("					self.prediccion[self.prediccion.index(simbolo)]=self.tokens[simbolo]\n")
+	analizador.write("			if self.tokenList[-3] in self.tokens:\n")
+	analizador.write("				print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'>Error sintactico:' + 'se encontro: ‘'+self.tokens[self.tokenList[-3]]+'‘; se esperaba: '+str(self.prediccion)[1:-1]+'.')\n")
+	analizador.write("			else:\n")
+	analizador.write("				print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'>Error sintactico:' + 'se encontro: ‘'+self.tokenList[-3]+'‘; se esperaba: '+str(self.prediccion)+'.')\n")
+	analizador.write('			return\n')
+	analizador.write("		print('El analisis sintactico ha finalizado correctamente.')\n")
 	
 	analizador.write("	def emparejar(self,tk_esperado):\n")
-	analizador.write("		if self.tokenList[-3] in tk_esperado:\n")	
-	analizador.write("			token=self.Analex.nextToken()\n")
-	analizador.write("			self.tokenList=token[1:-1].split(',')\n")
+	analizador.write("		if self.tokenList[0] in tk_esperado:\n")
+	analizador.write("			if self.tokenList[0] !='end':\n")	
+	analizador.write("				token=self.Analex.nextToken()\n")
+	analizador.write("				self.tokenList=token[1:-1].split(',')\n")
 
 	analizador.write("		else:\n")
 	analizador.write("			self.prediccion=[tk_esperado]\n")

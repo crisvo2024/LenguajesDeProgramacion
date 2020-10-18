@@ -26,8 +26,9 @@ stmt : repeat num tk_dospuntos stmt_block
 stmt : for tk_par_izq lexpr tk_puntoycoma lexpr tk_puntoycoma lexpr tk_par_der do_block
 stmt : next tk_puntoycoma
 stmt : break tk_puntoycoma
-stmt : id (tk_asignacion||tk_sum_asig||tk_res_asig||tk_mul_asig||tk_div_asig||tk_mod_asig) lexpr tk_puntoycoma
-stmt : id (tk_incremento||tk_decremento) tk_puntoycoma
+stmt : id operation
+operation : (tk_asignacion||tk_sum_asig||tk_res_asig||tk_mul_asig||tk_div_asig||tk_mod_asig) lexpr tk_puntoycoma
+operation : (tk_incremento||tk_decremento) tk_puntoycoma
 stmt : (tk_decremento||tk_incremento) id tk_puntoycoma
 lexpr : expr nexpr
 expr : not tk_par_izq rexpr tk_par_der
@@ -35,7 +36,7 @@ expr : rexpr
 nexpr : (and||or) lexpr
 nexpr : lambda
 rexpr : simple_expr comp_expr
-comp_expr : (tk_mayor_igual||tk_menor_igual||tk_mayor||tk_menor||tk_igualdad||tk_diferente)simple_expr 
+comp_expr : (tk_mayor_igual||tk_menor_igual||tk_mayor||tk_menor||tk_igualdad||tk_diferente) simple_expr 
 comp_expr : lambda
 simple_expr : term sum_expr
 sum_expr : (tk_mas||tk_menos) simple_expr
@@ -43,11 +44,12 @@ sum_expr : lambda
 term : factor mul_expr
 mul_expr : (tk_mul||tk_div||tk_mod) term
 mul_expr : lambda
-factor : (tk_num||tk_bool)
-factor : id (tk_incremento||tk_decremento)
+factor : (tk_num||true||false)
+factor : id incre
+incre : (tk_incremento||tk_decremento)
+incre : lambda
 factor : (tk_incremento||tk_decremento) id
-factor : id
 factor : par_lexpr
-factor : fid par_izq lexpr coma_lexper par_der
-coma_lexper : tk_coma lexpr coma_lexpr
+factor : fid tk_par_izq lexpr coma_lexper tk_par_der
+coma_lexper : tk_coma lexpr coma_lexper
 coma_lexper : lambda 
