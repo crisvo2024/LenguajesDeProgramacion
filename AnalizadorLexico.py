@@ -64,16 +64,16 @@ class AnalizadorLexico:
         "end"   
     )
     def __init__(self):
-        lines=""
-        while True:
-            #var=sys.stdin.readline()
-            var=input()
-            if not var:
-                break
-            else:
-                lines+=var+'\n'
-        self.stream=iter(lines)
-        #self.stream=iter("".join(sys.stdin.readlines()))
+        # lines=""
+        # while True:
+        #     #var=sys.stdin.readline()
+        #     var=input()
+        #     if not var:
+        #         break
+        #     else:
+        #         lines+=var+'\n'
+        # self.stream=iter(lines)
+        self.stream=iter("".join(sys.stdin.readlines()))
         self.valor=""
         self.line=1
         self.column=1

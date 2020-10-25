@@ -2,7 +2,7 @@ prog : fn_decl_list main_prog
 fn_decl_list : f fn_decl_list
 fn_decl_list : lambda
 f : function fid tk_dospuntos (bool||num) tk_par_izq var_dec tk_par_der stmt_var_list stmt_block 
-main_prog : stmt_var_list stmt_p end 
+main_prog : stmt_var_list stmt_mp end 
 stmt_var_list : var var_dec tk_puntoycoma 
 stmt_var_list : lambda
 var_dec : id tk_dospuntos (bool||num) add_var
@@ -10,6 +10,8 @@ add_var : tk_coma id tk_dospuntos (bool||num) add_var
 add_var : lambda	
 stmt_block : tk_llave_izq stmt stmt_p tk_llave_der
 stmt_block : stmt
+stmt_mp : stmt stmt_mp
+stmt_mp : lambda
 stmt_p : stmt stmt_p
 stmt_p : lambda
 stmt : print lexpr tk_puntoycoma
@@ -19,11 +21,11 @@ stmt : if par_lexpr do_block else stmt_block
 stmt : (unless||while||until) par_lexpr do_block 
 stmt : do_block (while||until) par_lexpr 
 do_block : do stmt_block
-par_lexpr : tk_par_izq lexpr tk_par_der
+par_lexpr : tk_par_izq forexpr tk_par_der
 stmt : return lexpr tk_puntoycoma
 stmt : loop stmt_block
-stmt : repeat num tk_dospuntos stmt_block
-stmt : for tk_par_izq lexpr tk_puntoycoma lexpr tk_puntoycoma lexpr tk_par_der do_block
+stmt : repeat tk_num tk_dospuntos stmt_block
+stmt : for tk_par_izq lexpr tk_puntoycoma lexpr tk_puntoycoma forexpr tk_par_der do_block
 stmt : next tk_puntoycoma
 stmt : break tk_puntoycoma
 stmt : id operation
@@ -31,7 +33,7 @@ operation : (tk_asignacion||tk_sum_asig||tk_res_asig||tk_mul_asig||tk_div_asig||
 operation : (tk_incremento||tk_decremento) tk_puntoycoma
 stmt : (tk_decremento||tk_incremento) id tk_puntoycoma
 lexpr : expr nexpr
-expr : not tk_par_izq rexpr tk_par_der
+expr : not par_lexpr
 expr : rexpr
 nexpr : (and||or) lexpr
 nexpr : lambda
@@ -50,6 +52,12 @@ incre : (tk_incremento||tk_decremento)
 incre : lambda
 factor : (tk_incremento||tk_decremento) id
 factor : par_lexpr
-factor : fid tk_par_izq lexpr coma_lexper tk_par_der
-coma_lexper : tk_coma lexpr coma_lexper
-coma_lexper : lambda 
+factor : fid tk_par_izq fexpr coma_fexper tk_par_der
+coma_fexper : tk_coma fexpr coma_fexper
+coma_fexper : lambda 
+fexpr : expr fnexpr
+fnexpr : (and||or) fexpr
+fnexpr : lambda
+forexpr : expr fornexpr
+fornexpr : (and||or) forexpr
+fornexpr : lambda

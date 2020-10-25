@@ -32,9 +32,9 @@ dictTokens={
 	"tk_diferente": '!=',
 	"tk_incremento": '++',
 	"tk_decremento": '--',
-	"tk_fid": "identificador de funcion'",
-	"tk_id": "identificador",
-	"tk_num":"numero",
+	"fid": 'identificador de funcion',
+	"id": 'identificador',
+	"tk_num":'numero',
 	
 }
 
@@ -110,11 +110,13 @@ def prediccionF(A):
 				break
 		else:
 			prediccionA[i]+=siguientes[A]
+		prediccionCopy=prediccionA[i].copy()
 		for token in prediccionA[i]:
 			if '||' in token:
 				old = token
-				prediccionA[i].remove(token)
-				prediccionA[i]+=old[1:-1].split("||")
+				prediccionCopy.remove(token)
+				prediccionCopy+=old[1:-1].split("||")
+		prediccionA[i]=prediccionCopy
 		i+=1	
 	return prediccionA		
 			
@@ -174,16 +176,25 @@ if __name__ == "__main__":
 	analizador.write("		try:\n")
 	analizador.write("			self.prog()\n")
 	analizador.write("		except RuntimeError:\n")
-	analizador.write('			print("Error sintactico: se encontro final de archivo; se esperaba ‘end’.")\n')
+	analizador.write("			print('<'+str(self.Analex.line)+':'+str(self.Analex.column)+'> Error sintactico: se encontro final de archivo; se esperaba '+chr(39)+'end'+chr(39)+'.')\n")
 	analizador.write('			return\n')
 	analizador.write('		except:\n')	
 	analizador.write("			for simbolo in self.prediccion:\n")
 	analizador.write("				if simbolo in self.tokens:\n")
 	analizador.write("					self.prediccion[self.prediccion.index(simbolo)]=self.tokens[simbolo]\n")
+	analizador.write("			if '(bool||num)' in self.prediccion :\n")
+	analizador.write('				self.prediccion.remove("(bool||num)")\n')
+	analizador.write("				self.prediccion.append('bool')\n")
+	analizador.write("				self.prediccion.append('num')\n")
+	analizador.write("			self.prediccion.sort()\n")
+	analizador.write("			if 'identificador' in self.prediccion and 'identificador de funcion' in self.prediccion:  \n")
+	analizador.write("				index = self.prediccion.index('identificador')\n")
+	analizador.write("				self.prediccion[index]='identificador de funcion'\n")
+	analizador.write("				self.prediccion[index+1]='identificador'\n")
 	analizador.write("			if self.tokenList[-3] in self.tokens:\n")
-	analizador.write("				print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'>Error sintactico:' + 'se encontro: ‘'+self.tokens[self.tokenList[-3]]+'‘; se esperaba: '+str(self.prediccion)[1:-1]+'.')\n")
+	analizador.write("				print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'> Error sintactico: ' + 'se encontro: '+chr(39)+self.tokens[self.tokenList[-3]]+chr(39)+'; se esperaba: '+str(self.prediccion)[1:-1]+'.')\n")
 	analizador.write("			else:\n")
-	analizador.write("				print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'>Error sintactico:' + 'se encontro: ‘'+self.tokenList[-3]+'‘; se esperaba: '+str(self.prediccion)+'.')\n")
+	analizador.write("				print('<'+self.tokenList[-2]+':'+self.tokenList[-1]+'> Error sintactico: ' + 'se encontro: '+chr(39)+self.tokenList[-3]+chr(39)+'; se esperaba: '+str(self.prediccion)[1:-1]+'.')\n")
 	analizador.write('			return\n')
 	analizador.write("		print('El analisis sintactico ha finalizado correctamente.')\n")
 	
